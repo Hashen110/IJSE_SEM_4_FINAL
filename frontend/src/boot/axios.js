@@ -9,6 +9,17 @@ import axios from 'axios'
 // for each client)
 const api = axios.create({ baseURL: 'https://api.example.com' })
 
+const imdbApi = axios.create({
+  baseURL: 'https://api.themoviedb.org/3',
+  headers: {
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNDhlY2UxOTI5Nzk5ZTQxZTIyZTFlZGJiMTU5M2Q5NiIsInN1YiI6IjYwYjFmYzdkYTA2NjQ1MDA2ZTc4M2I5MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.dWbo1Wf3aRUXfctrrwTMfg8aCe09j7Mf-wqOrH2c9ns',
+    'Content-Type': 'application/json;charset=utf-8'
+  },
+  params: {
+    api_key: 'a48ece1929799e41e22e1edbb1593d96'
+  }
+})
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
@@ -21,4 +32,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 })
 
-export { api }
+export { api, imdbApi }

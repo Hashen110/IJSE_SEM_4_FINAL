@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row q-col-gutter-md full-width">
-      <div v-for="i in discover" :key="i.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <div v-for="i in topRated" :key="i.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <movie-card :card="i" />
       </div>
     </div>
@@ -14,10 +14,10 @@ import { imdbApi } from 'boot/axios'
 import MovieCard from 'components/MovieCard'
 
 export default defineComponent({
-  name: 'PageIndex',
+  name: 'PageTopRated',
   components: { MovieCard },
   setup () {
-    const discover = ref([])
+    const topRated = ref([])
 
     function shuffleArray (array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -31,9 +31,9 @@ export default defineComponent({
 
     const getTrending = async (page) => {
       try {
-        const movies = await imdbApi.get('/discover/movie?page=' + page)
-        const tv = await imdbApi.get('/discover/tv?page=' + page)
-        discover.value = discover.value.concat(shuffleArray([...movies.data.results, ...tv.data.results]))
+        const movies = await imdbApi.get('/movie/top_rated?page=' + page)
+        const tv = await imdbApi.get('/tv/top_rated?page=' + page)
+        topRated.value = topRated.value.concat(shuffleArray([...movies.data.results, ...tv.data.results]))
       } catch (e) {}
     }
 
@@ -46,7 +46,7 @@ export default defineComponent({
     })
 
     return {
-      discover
+      topRated
     }
   }
 })
