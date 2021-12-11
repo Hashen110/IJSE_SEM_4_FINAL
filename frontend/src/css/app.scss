@@ -4,5 +4,40 @@ html {
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
+
+    .half-fit {
+      width: 50% !important;
+      height: 50% !important;
+    }
+
+    .half-height {
+      height: 50% !important;
+    }
+
+    .half-width {
+      width: 50% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    .half-window-height {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      height: 50vh !important;
+    }
+
+    .half-width {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      width: 50vw !important;
+    }
+
+    .q-item.q-router-link--active {
+      color: inherit;
+    }
+
+    .q-item.q-router-link--exact-active {
+      color: var(--q-primary);
+    }
   }
 }

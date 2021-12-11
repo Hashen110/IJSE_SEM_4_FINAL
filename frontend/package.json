@@ -3,21 +3,26 @@
   "version": "0.0.1",
   "description": "A recommendation AI",
   "productName": "IJSE_SEM_4_FINAL",
-  "author": "Hashen Abeysekara <hashen.abeysekara123@gmail.com>",
+  "author": {
+    "name": "Hashen Abeysekara",
+    "email": "hashen.abeysekara123@gmail.com"
+  },
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "deploy:flask": "rm -rfv ../static/* && rm -fv ../templates/index.html && cp -a dist/spa/. ../static/ && rm -fv ../static/index.html && cp -a dist/spa/index.html ../templates/",
+    "build": "quasar build && npm run deploy:flask",
+    "build:debug": "quasar build -d && npm run deploy:flask"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
-    "axios": "^0.21.1",
-    "core-js": "^3.6.5",
-    "quasar": "^2.0.0"
+    "@quasar/extras": "^1.12.1",
+    "axios": "^0.24.0",
+    "core-js": "^3.19.2",
+    "quasar": "^2.3.3"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.13.14",
-    "@quasar/app": "^3.0.0",
+    "@babel/eslint-parser": "^7.16.3",
+    "@quasar/app": "^3.2.4",
     "eslint": "^7.14.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.19.1",
@@ -27,15 +32,15 @@
     "eslint-webpack-plugin": "^2.4.0"
   },
   "browserslist": [
-    "last 10 Chrome versions",
-    "last 10 Firefox versions",
-    "last 4 Edge versions",
-    "last 7 Safari versions",
-    "last 8 Android versions",
-    "last 8 ChromeAndroid versions",
-    "last 8 FirefoxAndroid versions",
-    "last 10 iOS versions",
-    "last 5 Opera versions"
+    "last 20 Chrome versions",
+    "last 20 Firefox versions",
+    "last 8 Edge versions",
+    "last 14 Safari versions",
+    "last 16 Android versions",
+    "last 16 ChromeAndroid versions",
+    "last 16 FirefoxAndroid versions",
+    "last 20 iOS versions",
+    "last 10 Opera versions"
   ],
   "engines": {
     "node": ">= 12.22.1",

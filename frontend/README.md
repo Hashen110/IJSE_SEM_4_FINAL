@@ -11,6 +11,7 @@ npm install
 ```bash
 quasar dev
 ```
+Run `qusar dev -p 1234` to change the default port.
 
 ### Lint the files
 ```bash
@@ -20,6 +21,16 @@ npm run lint
 ### Build the app for production
 ```bash
 quasar build
+```
+
+### Build the app for production and deploy to flask server
+```bash
+npm run build
+```
+
+### Build the app for production with debugging enabled and deploy to flask server
+```bash
+npm run build:debug
 ```
 
 ### Customize the configuration

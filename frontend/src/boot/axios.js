@@ -1,13 +1,10 @@
 import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' })
+let api = axios.create({ baseURL: 'http://127.0.0.1:5000/api' })
+if (process.env.PROD) {
+  api = axios.create({ baseURL: 'http://ijsesemfinal4-env.eba-qqphzbwm.us-west-2.elasticbeanstalk.com/api' })
+}
 
 const imdbApi = axios.create({
   baseURL: 'https://api.themoviedb.org/3',

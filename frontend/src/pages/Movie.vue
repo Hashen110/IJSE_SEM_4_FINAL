@@ -1,7 +1,11 @@
 <template>
   <q-page padding>
+    <q-ajax-bar ref="bar" position="top" />
+    <q-ajax-bar ref="bar" position="right" />
+    <q-ajax-bar ref="bar" position="bottom" reverse />
+    <q-ajax-bar ref="bar" position="left" reverse />
     <q-card>
-      <q-img v-if="movie.backdrop_path" :src="'https://image.tmdb.org/t/p/original/' + movie.backdrop_path" />
+      <q-img v-if="movie.backdrop_path" :src="'https://image.tmdb.org/t/p/original/' + movie.backdrop_path" style="max-height: 75vh;" />
       <q-item>
         <q-item-section avatar>
           <q-avatar size="10rem">
@@ -15,10 +19,10 @@
           <q-item-label v-if="movie.overview">{{movie.overview}}</q-item-label>
         </q-item-section>
         <q-item-section side>
-          <q-btn icon="thumb_up" color="positive" class="q-my-sm">
+          <q-btn :disable="!externalIds.id" icon="thumb_up" color="positive" class="q-my-sm" @click="onLike">
             <q-tooltip>I like this</q-tooltip>
           </q-btn>
-          <q-btn icon="thumb_down" color="negative" class="q-my-sm">
+          <q-btn :disable="!externalIds.id" icon="thumb_down" color="negative" class="q-my-sm" @click="onDislike">
             <q-tooltip>I dislike this</q-tooltip>
           </q-btn>
         </q-item-section>
@@ -117,8 +121,9 @@
 <script>
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { imdbApi } from 'boot/axios'
+import { api, imdbApi } from 'boot/axios'
 import MovieCard from 'components/MovieCard'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'PageMovie',
@@ -126,6 +131,7 @@ export default defineComponent({
     MovieCard
   },
   setup () {
+    const $q = useQuasar()
     const route = useRoute()
     const id = ref(route.params.id)
     const movie = ref({})
@@ -133,8 +139,12 @@ export default defineComponent({
     const similar = ref([])
     const keywords = ref([])
     const colors = ref(['primary', 'secondary', 'accent', 'positive', 'negative', 'info', 'warning'])
+    const bar = ref(null)
+    const externalIds = ref({ id: 0 })
 
     onMounted(() => {
+      const barRef = bar.value
+      if (barRef) { barRef.start() }
       imdbApi.get('/movie/' + id.value).then((response) => {
         movie.value = response.data
       }).finally(() => {
@@ -146,6 +156,15 @@ export default defineComponent({
           }).finally(() => {
             imdbApi.get('/movie/' + id.value + '/keywords').then((response) => {
               keywords.value = response.data.keywords
+            }).finally(() => {
+              imdbApi.get('/movie/' + id.value + '/external_ids').then((response) => {
+                api.post('/watch', {
+                  ...response.data,
+                  type: 'movie'
+                }).then(() => {})
+                externalIds.value = response.data
+                if (barRef) { barRef.stop() }
+              })
             })
           })
         })
@@ -153,12 +172,34 @@ export default defineComponent({
     })
 
     return {
+      bar,
       movie,
       reviews,
       similar,
       keywords,
+      externalIds,
       getRandomColor () {
         return colors.value[Math.floor(Math.random() * colors.value.length)]
+      },
+      onLike () {
+        api.post('/like', {
+          ...externalIds.value,
+          type: 'movie',
+          like: true
+        }).then(() => {
+          $q.notify({ message: 'Like added successfully :)', type: 'positive' })
+          externalIds.value = { id: 0 }
+        })
+      },
+      onDislike () {
+        api.post('/like', {
+          ...externalIds.value,
+          type: 'movie',
+          like: false
+        }).then(() => {
+          $q.notify({ message: 'Dislike added successfully :(', type: 'negative' })
+          externalIds.value = { id: 0 }
+        })
       }
     }
   }

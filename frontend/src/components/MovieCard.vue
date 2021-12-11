@@ -1,6 +1,11 @@
 <template>
   <q-card flat bordered @click="onCardClick" class="cursor-pointer">
-    <q-img v-if="card.poster_path" :src="'https://image.tmdb.org/t/p/w500/' + card.poster_path">
+    <q-img :src="'https://image.tmdb.org/t/p/w500/' + card.poster_path">
+      <template v-slot:error>
+        <div class="absolute-full flex flex-center bg-grey text-white text-uppercase text-bold">
+          No Image
+        </div>
+      </template>
       <q-tooltip v-if="card.title || card.name">{{card.title || card.name}}</q-tooltip>
     </q-img>
     <q-card-section>

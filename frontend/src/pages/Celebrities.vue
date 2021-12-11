@@ -6,8 +6,8 @@
       <q-ajax-bar ref="bar" position="bottom" reverse />
       <q-ajax-bar ref="bar" position="left" reverse />
       <div class="row q-col-gutter-md full-width">
-        <div v-for="popular in populars" :key="popular.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-          <movie-card :card="popular" />
+        <div v-for="celebrity in celebrities" :key="celebrity.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <celebrity-card :card="celebrity" no-link />
         </div>
       </div>
       <template v-slot:loading>
@@ -24,35 +24,24 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { imdbApi } from 'boot/axios'
-import MovieCard from 'components/MovieCard'
+import CelebrityCard from 'components/CelebrityCard'
 
 export default defineComponent({
-  name: 'PagePopular',
-  components: { MovieCard },
+  name: 'PageCelebrities',
+  components: { CelebrityCard },
   setup () {
-    const populars = ref([])
+    const celebrities = ref([])
     const bar = ref(null)
 
-    function shuffleArray (array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        const temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
-      }
-      return array
-    }
-
     return {
-      populars,
+      celebrities,
       bar,
       onLoad: async (index, done) => {
         try {
           const barRef = bar.value
           if (barRef) { barRef.start() }
-          const movies = await imdbApi.get('/movie/popular?page=' + index)
-          const tv = await imdbApi.get('/tv/popular?page=' + index)
-          populars.value = populars.value.concat(shuffleArray([...movies.data.results, ...tv.data.results]))
+          const people = await imdbApi.get('/person/popular?page=' + index)
+          celebrities.value = celebrities.value.concat([...people.data.results])
           done()
           if (barRef) { barRef.stop() }
         } catch (e) {}
