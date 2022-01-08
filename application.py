@@ -11,8 +11,7 @@ application = Flask(__name__, static_url_path='', static_folder='static')
 CORS(application)
 DB_URL = 'sqlite:///test.db'
 if 'RDS_HOSTNAME' in os.environ:
-    DB_URL = 'mysql+pymysql://admin:admin1234@aa1u6lvao3hbygo.cvkgxupgoucw.us-west-2.rds.amazonaws.com:3306/' + \
-             os.environ['RDS_DB_NAME']
+    DB_URL = 'mysql+pymysql://admin:admin1234@aa1niiojyscgb4i.cvkgxupgoucw.us-west-2.rds.amazonaws.com:3306/' + os.environ['RDS_DB_NAME']
 application.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(application, session_options={"autoflush": False})
