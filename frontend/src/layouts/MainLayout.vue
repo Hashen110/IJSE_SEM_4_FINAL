@@ -47,7 +47,8 @@
                   <q-avatar size="xl">
                     <q-img :src="'https://via.placeholder.com/640.png?text=' + user.user.username" :alt="user.user.username" />
                   </q-avatar>
-                  <div class="text-subtitle1 q-my-sm">{{user.user.username}}</div>
+                  <div class="text-subtitle1 text-bold">{{user.user.username}}</div>
+                  <div class="text-caption q-mb-sm">{{user.user.gender ? 'Male' : 'Female'}} ({{user.user.age}})</div>
                   <q-btn outline color="secondary" size="sm" label="Logout" @click="onLogout" />
                 </div>
               </div>

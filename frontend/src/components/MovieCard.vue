@@ -39,9 +39,9 @@ export default defineComponent({
       onCardClick () {
         if (!props.noLink) {
           if (props.card.title) {
-            router.push({ path: '/movie/' + props.card.id })
+            router.push({ path: '/movie', query: { id: props.card.id } })
           } else if (props.card.name) {
-            router.push({ path: '/tv/' + props.card.id })
+            router.push({ path: '/tv', query: { id: props.card.id } })
           }
         }
       }

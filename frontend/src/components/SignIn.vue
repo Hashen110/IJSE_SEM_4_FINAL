@@ -37,6 +37,11 @@
               <q-icon name="person" />
             </template>
           </q-input>
+          <div>
+            <q-radio v-model="signUpDetails.gender" :model-value="signUpDetails.gender" val="1" label="Male" class="q-mx-md" />
+            <q-radio v-model="signUpDetails.gender" :model-value="signUpDetails.gender" val="0" label="Female" class="q-mx-md" />
+          </div>
+          <q-select outlined v-model="signUpDetails.age" :model-value="signUpDetails.age" :options="ageOptions" label="Age" />
           <q-input v-model="signUpDetails.password" :model-value="signUpDetails.password" clearable outlined maxlength="50" counter label="Password" :type="showPassword.signUpPassword ? 'text' : 'password'">
             <template v-slot:prepend>
               <q-icon name="password" />
@@ -45,7 +50,7 @@
               <q-icon :name="showPassword.signUpPassword ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="showPassword.signUpPassword = !showPassword.signUpPassword"/>
             </template>
           </q-input>
-          <q-input v-model="signUpDetails.confirmPassword" :model-value="signUpDetails.confirmPassword" clearable outlined maxlength="50" counter label="Password" :type="showPassword.signUpConfirmPassword ? 'text' : 'password'">
+          <q-input v-model="signUpDetails.confirmPassword" :model-value="signUpDetails.confirmPassword" clearable outlined maxlength="50" counter label="Confirm Password" :type="showPassword.signUpConfirmPassword ? 'text' : 'password'">
             <template v-slot:prepend>
               <q-icon name="password" />
             </template>
@@ -95,6 +100,8 @@ export default defineComponent({
     })
     const signUpDetails = ref({
       username: '',
+      gender: '1',
+      age: '18',
       password: '',
       confirmPassword: ''
     })
@@ -133,7 +140,9 @@ export default defineComponent({
         if (signUpDetails.value.password === signUpDetails.value.confirmPassword) {
           api.post('/signup', {
             username: signUpDetails.value.username,
-            password: signUpDetails.value.password
+            password: signUpDetails.value.password,
+            gender: Number(signUpDetails.value.gender),
+            age: Number(signUpDetails.value.age)
           }).then((response) => {
             if (response.data.error) {
               $q.notify({ message: response.data.error, type: 'negative' })
@@ -194,6 +203,11 @@ export default defineComponent({
       },
       onSignUp,
       onLogin
+    }
+  },
+  computed: {
+    ageOptions () {
+      return Array.from({ length: 100 }, (_, i) => i + 1)
     }
   }
 })

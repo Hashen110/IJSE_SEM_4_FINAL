@@ -156,7 +156,7 @@ export default defineComponent({
   setup () {
     const $q = useQuasar()
     const route = useRoute()
-    const id = ref(route.params.id)
+    const id = ref(route.query.id)
     const tv = ref({})
     const reviews = ref([])
     const similar = ref([])
@@ -183,7 +183,8 @@ export default defineComponent({
               imdbApi.get('/tv/' + id.value + '/external_ids').then((response) => {
                 api.post('/watch', {
                   ...response.data,
-                  type: 'tv'
+                  type: 'tv',
+                  content: tv.value
                 }).then(() => {})
                 externalIds.value = response.data
                 if (barRef) { barRef.stop() }

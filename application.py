@@ -9,9 +9,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 application = Flask(__name__, static_url_path='', static_folder='static')
 CORS(application)
-DB_URL = 'mysql+pymysql://admin:admin1234@aa1u6lvao3hbygo.cvkgxupgoucw.us-west-2.rds.amazonaws.com:3306/aa1u6lvao3hbygo'
+DB_URL = 'sqlite:///test.db'
 if 'RDS_HOSTNAME' in os.environ:
-    DB_URL = 'mysql+pymysql://admin:admin1234@aa1u6lvao3hbygo.cvkgxupgoucw.us-west-2.rds.amazonaws.com:3306/' + os.environ['RDS_DB_NAME']
+    DB_URL = 'mysql+pymysql://admin:admin1234@aa1u6lvao3hbygo.cvkgxupgoucw.us-west-2.rds.amazonaws.com:3306/' + \
+             os.environ['RDS_DB_NAME']
 application.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(application, session_options={"autoflush": False})
@@ -21,6 +22,8 @@ class User(db.Model):
     id = db.Column(db.String(255), primary_key=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    gender = db.Column(db.Integer, nullable=False)
     token = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -33,6 +36,7 @@ class Watch(db.Model):
     type = db.Column(db.String(255), nullable=False)
     tmdb_id = db.Column(db.Integer, nullable=False)
     imdb_id = db.Column(db.String(255))
+    content = db.Column(db.JSON)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     user_id = db.Column(db.String(255), db.ForeignKey('user.id'), nullable=False)
@@ -60,6 +64,7 @@ class Like(db.Model):
     like = db.Column(db.Boolean, nullable=False)
     tmdb_id = db.Column(db.Integer, nullable=False)
     imdb_id = db.Column(db.String(255))
+    content = db.Column(db.JSON)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     user_id = db.Column(db.String(255), db.ForeignKey('user.id'), nullable=False)
@@ -87,7 +92,7 @@ def signup():
                 return {'error': 'Username has already taken'}
         encoded_password = base64.b64encode(str(json['password']).encode('ascii'))
         user = User(id=uuid.uuid4().hex, username=json['username'], password=encoded_password,
-                    token=uuid.uuid4().hex)
+                    token=uuid.uuid4().hex, age=json['age'], gender=json['gender'])
         db.session.add(user)
         db.session.commit()
         return {'token': user.token}
@@ -104,6 +109,8 @@ def validate_token():
                 'validate': True,
                 'user': {
                     'username': user.username,
+                    'age': user.age,
+                    'gender': user.gender,
                     'token': user.token,
                     'timestamp': user.timestamp
                 }
@@ -127,7 +134,7 @@ def watch():
     user = get_user(request.headers.get('Authorization'))
     if user is not None:
         watch_obj = Watch(id=uuid.uuid4().hex, type=json['type'], tmdb_id=json['id'], imdb_id=json['imdb_id'],
-                          user=user)
+                          user=user, content=json['content'])
         user.watches.append(watch_obj)
         db.session.add(user)
         db.session.commit()
@@ -140,7 +147,7 @@ def like():
     user = get_user(request.headers.get('Authorization'))
     if user is not None:
         like_obj = Like(id=uuid.uuid4().hex, type=json['type'], like=json['like'], tmdb_id=json['id'],
-                        imdb_id=json['imdb_id'], user=user)
+                        imdb_id=json['imdb_id'], user=user, content=json['content'])
         user.likes.append(like_obj)
         db.session.add(user)
         db.session.commit()
