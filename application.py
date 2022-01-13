@@ -7,6 +7,8 @@ from flask import Flask, redirect, render_template, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+from recommend import q_movies, q_movies_json
+
 application = Flask(__name__, static_url_path='', static_folder='static')
 CORS(application)
 DB_URL = 'sqlite:///test.db'
@@ -79,6 +81,36 @@ db.create_all()
 @application.route("/")
 def index():
     return render_template("index.html")
+
+
+@application.route('/api/recommend')
+def recommend():
+    page = request.args.get('page')
+    try:
+        page = int(page)
+        if page < 1:
+            page = 1
+    except (ValueError, TypeError):
+        page = 1
+    limit = request.args.get('limit')
+    try:
+        limit = int(limit)
+        if limit < 20:
+            limit = 20
+    except (ValueError, TypeError):
+        limit = 20
+    movies = q_movies_json
+    pages = int(len(q_movies.id) / limit)
+    if page > pages - 1:
+        movies = movies[-limit:]
+    else:
+        movies = movies[limit * (page - 1):(limit * (page - 1) + limit)]
+    return {
+        'page': page,
+        'results': movies,
+        'total_pages': pages,
+        'total_results': len(q_movies.id)
+    }
 
 
 @application.route('/api/signup', methods=['POST'])

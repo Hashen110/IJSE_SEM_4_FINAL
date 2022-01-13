@@ -35,6 +35,11 @@
         </q-input>
         <q-space />
         <div class="q-gutter-sm row items-center no-wrap">
+          <a href="https://github.com/Hashen110/IJSE_SEM_4_FINAL" target="_blank" style="text-decoration: none;" class="text-white">
+            <q-btn icon="link">
+              <q-tooltip>Github link</q-tooltip>
+            </q-btn>
+          </a>
           <q-toggle :model-value="darkTheme" v-model="darkTheme" unchecked-icon="light_mode" checked-icon="dark_mode" @update:model-value="$q.dark.toggle">
             <q-tooltip>Toggle themes</q-tooltip>
           </q-toggle>

@@ -2,3 +2,5 @@ flask
 Flask-SQLAlchemy
 flask-cors
 pymysql
+pandas
+numpy
