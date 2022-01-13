@@ -2,7 +2,7 @@
 
 A recommendation AI
 
-first run `pip install -r requirements.txt`
+first run `pip install -r requirements.txt` then run `python application.py`
 
 [document](https://docs.google.com/document/d/1y-USkORPPJ8t7bSnkSfhvXqKBCt2boes-OtxUyBRfJU/edit?usp=sharing)
 
